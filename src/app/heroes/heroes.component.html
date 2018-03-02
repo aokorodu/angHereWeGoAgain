@@ -1,0 +1,10 @@
+<div class="animationContainer">
+    <div class="animationTitle"(click)="togglePause()">{{title}} paused: {{paused}}</div>
+    <canvas width="400" height="400" id="particleCanvas"></canvas>
+    <div class="buttonHolder">
+        <button class="uiButton" (click)="toggleFloor()">Floor: {{floor}}</button>
+        <button class="uiButton" (click)="toggleOff()">Off: {{off}}</button>
+    </div>
+    <!--label>Name: <input [(ngModel)]="gravity" placeholder="gravity"></label-->
+</div>
+

@@ -1,0 +1,8 @@
+<div class="animationContainer">
+  <div class="animationTitle" (click)="togglePause()">{{title}} paused: {{paused}}</div>
+  <canvas width="400" height="400" id="orbitCanvas"></canvas>
+  <div class="buttonHolder">
+      <button class="uiButton" (click)="goHome()" >Reset</button>
+      <button class="uiButton" (click)="remix()">Remix</button>
+  </div>
+</div>
