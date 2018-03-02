@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as createjs from 'createjs-module';
 import {OrbitGenerator} from './orbitGenerator';
-declare var TweenMax: any;
+//declare var TweenMax: any;
 
 @Component({
   selector: 'app-orbits',
