@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as createjs from 'createjs-module';
 import {OrbitGenerator} from './orbitGenerator';
-declare var TweenMax: any;
+
 
 @Component({
   selector: 'app-orbits',
@@ -40,7 +40,6 @@ export class OrbitsComponent implements OnInit {
     bg.graphics.rect(0, 0, 400, 400);
     bg.cache(0, 0, this.stage.canvas.width, this.stage.canvas.height);
     this.stage.addChild(bg);
-    // TweenMax.to(bg, 5, {x: 50, y: 50});
   }
 
   initTicker() {
