@@ -29,9 +29,9 @@ export class Spark {
     drawShape() {
         console.log('drawShape');
         this.shape = new createjs.Shape();
-        this.shape.graphics.beginFill('rgba(255, 0, 255, 200');
-        this.shape.graphics.beginStroke('rgba(255, 0, 255, 255');
-        this.shape.graphics.setStrokeStyle(4);
+        this.shape.graphics.beginFill('rgba(255, 100, 255, 200');
+        // this.shape.graphics.beginStroke('rgba(255, 0, 255, 255');
+        // this.shape.graphics.setStrokeStyle(4);
         this.shape.graphics.drawCircle(0, 0, this.radius);
         this.shape.cache(-this.radius, -this.radius, this.radius * 2, this.radius * 2);
         this.stage.addChild(this.shape);
