@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { HeroesComponent } from './heroes/heroes.component';
 import { OrbitsComponent } from './orbits/orbits.component';
 import { TitleAnimComponent } from './title-anim/title-anim.component';
+import { SparksComponent } from './sparks/sparks.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { TitleAnimComponent } from './title-anim/title-anim.component';
     AppComponent,
     HeroesComponent,
     OrbitsComponent,
-    TitleAnimComponent
+    TitleAnimComponent,
+    SparksComponent
   ],
   imports: [
     BrowserModule,
