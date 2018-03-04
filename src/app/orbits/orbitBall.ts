@@ -1,5 +1,6 @@
 import * as createjs from 'createjs-module';
 import { PVector } from '../pvector';
+import {TweenMax, Power2} from 'gsap';
 
 export class OrbitBall{
     origin:PVector;
@@ -101,7 +102,8 @@ export class OrbitBall{
       }
 
       this.goingHome = true;
-      createjs.Tween.get(this.shape).to({ x: this.origin.x, y: this.origin.y }, 2000, createjs.Ease.getPowInOut(4)).call(this.finishedGoingHome.bind(this));
+      TweenMax.to(this.shape, 2, {x:this.origin.x, y:this.origin.y, ease: Power2.easeOut, onComplete:this.finishedGoingHome.bind(this)})
+      //createjs.Tween.get(this.shape).to({ x: this.origin.x, y: this.origin.y }, 2000, createjs.Ease.getPowInOut(4)).call(this.finishedGoingHome.bind(this));
     }
 
     remix() {
@@ -114,7 +116,8 @@ export class OrbitBall{
       let randomX = Math.random() * this.maxX;
       let randomY = Math.random() * this.maxY;
 
-      createjs.Tween.get(this.shape).to({ x: randomX, y: randomY }, 2000, createjs.Ease.getPowInOut(4)).call(this.finishedRemixing.bind(this));
+      TweenMax.to(this.shape, 2, {x: randomX, y: randomY, ease: Power2.easeInOut, onComplete:this.finishedRemixing.bind(this)});
+      //createjs.Tween.get(this.shape).to({ x: randomX, y: randomY }, 2000, createjs.Ease.getPowInOut(4)).call(this.finishedRemixing.bind(this));
     }
 
     finishedRemixing() {
