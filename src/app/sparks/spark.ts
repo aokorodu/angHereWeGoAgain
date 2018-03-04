@@ -29,6 +29,12 @@ export class Spark {
     drawShape() {
         console.log('drawShape');
         this.shape = new createjs.Shape();
+        /*
+            let red: number = 150 + Math.round(Math.random() * 105);
+            let green: number = 50 + Math.round(Math.random() * 50);
+            let blue: number = Math.round(Math.random() * 255);
+            this.shape.graphics.beginFill(`rgba(${red}, ${green}, ${blue}, 200`);
+        */
         this.shape.graphics.beginFill('rgba(255, 100, 255, 200');
         // this.shape.graphics.beginStroke('rgba(255, 0, 255, 255');
         // this.shape.graphics.setStrokeStyle(4);

@@ -28,6 +28,11 @@ export class Ball {
  drawShape(stage) {
     console.log('drawShape');
     this.shape = new createjs.Shape();
+    let red: number = 150 + Math.round(Math.random() * 105);
+    let green: number = 50 + Math.round(Math.random() * 50);
+    let blue: number = Math.round(Math.random() * 255);
+    //this.shape.graphics.beginFill(`rgba(${red}, 0, 255, .5`);
+    //this.shape.graphics.beginStroke(`rgba(${red}, 0, 255, 255`);
     this.shape.graphics.beginFill('rgba(255, 0, 255, .5');
     this.shape.graphics.beginStroke('rgba(255, 0, 255, 255');
     this.shape.graphics.setStrokeStyle(4);
