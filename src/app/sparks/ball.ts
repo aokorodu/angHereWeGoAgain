@@ -15,7 +15,7 @@ export class Ball {
  constructor(x, y, maxX, maxY, stage) {
   this.location = new PVector(x, y);
   this.accel = new PVector(0, .5);
-  this.velocity = new PVector(Math.random() * 6 - 3, Math.random() * 10 - 5);
+  this.velocity = new PVector(Math.random() * 6 - 3, Math.random() * 10 - 10);
   this.maxX = maxX;
   this.maxY = maxY;
   this.radius = 4;
