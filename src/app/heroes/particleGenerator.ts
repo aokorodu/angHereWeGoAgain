@@ -79,25 +79,25 @@ export class ParticleGenerator{
     }
 
     launchParticle() {
-      if(this.stopped) return;
+      if ( this.stopped) {
+        return;
+      }
 
-      if(this.particles.length < this.totalParticles)
-      {
-        if(this.particleHolder.length > 0)
-        {
+      if ( this.particles.length < this.totalParticles) {
+        if ( this.particleHolder.length > 0) {
           this.particles.push(this.particleHolder.pop());
-        } else{
+        } else {
           this.particles.push(new Particle(this.location.x, this.location.y, this.stage));
         }
-  
-        //console.log(this.particles.length, " of ", this.totalParticles)
+
+        // console.log(this.particles.length, " of ", this.totalParticles)
       }
     }
-    applyForce(v){
-      if(this.stopped) return;
-  
-      for(let i = 0; i < this.particles.length; i++)
-      {
+    applyForce(v) {
+      if ( this.stopped) {
+        return;
+      }
+      for ( let i = 0; i < this.particles.length; i++) {
         let p = this.particles[i];
         if(p.isDead)
         {
