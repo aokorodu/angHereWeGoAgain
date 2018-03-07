@@ -1,0 +1,41 @@
+canvas{
+    border: 0px solid #cccccc;
+    /*-webkit-filter: drop-shadow(0px 0px 5px #222);
+    filter: drop-shadow(0px 0px 5px #222);*/
+    border-radius: 20px;
+    margin: 0px;
+}
+
+.animationContainer{
+    display:inline-block;
+    vertical-align:top;
+    margin-bottom: 5px;
+}
+
+.animationTitle{
+    margin-bottom: 5px;
+    padding:10px;
+    width: 380px;
+    font-size: 18px;
+    text-align: center;
+    background-color: #eaeaea;
+    border-radius: 10px;
+    color:#999999;
+}
+
+.uiButton{
+    margin: 0px;
+    padding:10px;
+    width: 197px;
+    font-size: 18px;
+    text-align: center;
+    background-color: #eaeaea;
+    border-radius: 10px;
+    color:#999999;
+    display: inline-block;
+    border: solid #dddddd 2px;
+}
+
+.buttonHolder{
+    margin: 0px;
+}

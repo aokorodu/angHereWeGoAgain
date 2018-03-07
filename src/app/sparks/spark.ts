@@ -27,7 +27,6 @@ export class Spark {
     }
 
     drawShape() {
-        console.log('drawShape');
         this.shape = new createjs.Shape();
         /*
             let red: number = 150 + Math.round(Math.random() * 105);

@@ -39,7 +39,7 @@ export class HeroesComponent implements AfterViewInit {
 
   initBG() {
     const bg = new createjs.Shape();
-    //bg.graphics.beginLinearGradientFill(this.backgroundFill, [0, 1], 0, 0, 0, 400);
+    // bg.graphics.beginLinearGradientFill(this.backgroundFill, [0, 1], 0, 0, 0, 400);
     bg.graphics.beginRadialGradientFill(this.backgroundFill, [1, 0], 200, 100, 0, 200, 100, 300);
     bg.graphics.rect(0, 0, 400, 400);
     bg.cache(0, 0, this.stage.canvas.width, this.stage.canvas.height);

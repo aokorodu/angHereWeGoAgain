@@ -26,14 +26,11 @@ export class SparkGenerator {
         for ( let b of this.balls) {
             if ( !b.isDead()) {
                 if ( b.update()) {
-                    console.log('bounced');
                     this.explode(b);
                 }
                 b.display();
             } else {
-                console.log('its dead', this.balls.indexOf(b));
                 this.balls.splice( this.balls.indexOf(b), 1);
-                console.log('total balls left: ' + this.balls.length);
             }
         }
 

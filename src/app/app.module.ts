@@ -8,6 +8,7 @@ import { HeroesComponent } from './heroes/heroes.component';
 import { OrbitsComponent } from './orbits/orbits.component';
 import { TitleAnimComponent } from './title-anim/title-anim.component';
 import { SparksComponent } from './sparks/sparks.component';
+import { ReadyGraphComponent } from './ready-graph/ready-graph.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { SparksComponent } from './sparks/sparks.component';
     HeroesComponent,
     OrbitsComponent,
     TitleAnimComponent,
-    SparksComponent
+    SparksComponent,
+    ReadyGraphComponent
   ],
   imports: [
     BrowserModule,
