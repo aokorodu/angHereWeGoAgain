@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as createjs from 'createjs-module';
 import {PVector} from '../pvector';
+import {TweenMax, Power2} from 'gsap';
 
 @Component({
   selector: 'app-ready-graph',
@@ -13,7 +14,7 @@ export class ReadyGraphComponent implements OnInit {
   backgroundFill: any = ['#212121', '#676767'];
   title: String = 'Readiness Calculator';
   stageWidth = 800;
-  stageHeight = 400;
+  stageHeight = 800;
   margin = 20;
   graphHeight = this.stageHeight - (2 * this.margin);
   graphWidth = this.stageWidth - (2 * this.margin);
@@ -25,7 +26,11 @@ export class ReadyGraphComponent implements OnInit {
 
   maxVal = 0;
 
+  interest = .05;
+  startVal = 100;
 
+  graphContainer: any;
+  graphLine: any;
 
   constructor() { }
 
@@ -36,14 +41,24 @@ export class ReadyGraphComponent implements OnInit {
   ngAfterViewInit() {
     this.initStage();
     this.initBG();
-    this.initAxes()
+    this.initAxes();
+    this.initGraphContainer();
     this.initHashLines();
     this.initVertLine();
     this.calcGraphPoints();
     this.plotGraphPoints();
-    this.stage.update();
-    
+    this.initTicker();
   }
+
+  initTicker() {
+    createjs.Ticker.setFPS(60);
+    createjs.Ticker.addEventListener('tick', this.draw.bind(this));
+  }
+
+  draw(evt) {
+    this.stage.update(evt);
+  }
+  
 
   initStage() {
     this.stage = new createjs.Stage('graphCanvas');
@@ -53,7 +68,7 @@ export class ReadyGraphComponent implements OnInit {
   initBG() {
     const bg = new createjs.Shape();
     bg.graphics.beginLinearGradientFill(this.backgroundFill, [0, 1], 0, 0, 0, this.stageHeight);
-    bg.graphics.rect(0, 0, 800, 400);
+    bg.graphics.rect(0, 0, this.stageWidth, this.stageHeight);
     bg.cache(0, 0, this.stage.canvas.width, this.stage.canvas.height);
     this.stage.addChild(bg);
     
@@ -72,6 +87,14 @@ export class ReadyGraphComponent implements OnInit {
     this.stage.addChild(sh);
   }
 
+  initGraphContainer() {
+    this.graphContainer = new createjs.Container();
+    this.graphContainer.x = this.margin;
+    this.graphContainer.y = this.stageHeight - this.margin;
+
+    this.stage.addChild(this.graphContainer);
+  }
+
   initHashLines() {
     for ( let col = 0; col < this.totalCols; col++) {
       let sh = new createjs.Shape();
@@ -82,9 +105,9 @@ export class ReadyGraphComponent implements OnInit {
       sh.graphics.lineTo(0, this.graphHeight);
       sh.graphics.endStroke();
       sh.cache(0, -1, 2, this.graphHeight);
-      sh.x = this.margin + ((col + 1) * this.graphWidth / this.totalCols);
-      sh.y = this.margin;
-      this.stage.addChild(sh);
+      sh.x = ((col + 1) * this.graphWidth / this.totalCols);
+      sh.y = -this.graphHeight;
+      this.graphContainer.addChild(sh);
     }
 
     for ( let row = 0; row < this.totalRows; row++) {
@@ -96,9 +119,9 @@ export class ReadyGraphComponent implements OnInit {
       sh.graphics.lineTo(this.graphWidth, 0);
       sh.graphics.endStroke();
       // sh.cache(0, -1, 2, this.graphHeight);
-      sh.x = this.margin;
-      sh.y = this.margin + (row * this.graphHeight / this.totalRows);
-      this.stage.addChild(sh);
+      sh.x = 0;
+      sh.y = -(row * this.graphHeight / this.totalRows);
+      this.graphContainer.addChild(sh);
     }
   }
 
@@ -120,44 +143,59 @@ export class ReadyGraphComponent implements OnInit {
 
     // A = P (1 + r/n) ^ nt
     // A = startVal * (1 + 0.06/12) ^ 12col
-    let startVal = 10;
-    let ror = 1.06;
     this.points = [];
-    this.points.push(startVal);
+    this.points.push(this.startVal);
     for ( let col = 1; col < this.totalCols; col++) {
-      // let val = startVal * (1 + 0.06/12) ^ 12 * col;
-      let val = startVal * Math.pow((1 + 0.06 / 12), 12 * col);
-      // Math.round(startVal * Math.pow(ror, col - 1) * Math.pow(ror, col));
+      // let val = this.startVal * (1 + 0.06/12) ^ 12 * col;
+      let val = this.startVal * Math.pow((1 + this.interest / 12), 12 * col) + (12 * col * .1);
+      // Math.round(this.startVal * Math.pow(ror, col - 1) * Math.pow(ror, col));
       this.points.push(val);
-      console.log(val);
     }
 
-    this.maxVal = this.points[this.points.length - 1];
+    this.maxVal = 12 * this.startVal; //this.points[this.points.length - 1];
 
   }
 
   plotGraphPoints() {
     let incrVal = this.maxVal / this.totalRows;
-    let sh = new createjs.Shape();
-    sh.x = this.margin;
-    sh.y = this.stageHeight - this.margin;
-    sh.graphics.setStrokeStyle(1);
-    sh.alpha = 1;
-    sh.graphics.beginStroke('#FFFFFF');
-    sh.graphics.moveTo(0, 0);
-    for ( let col = 0; col < this.totalCols; col++) {
-      let x = Math.round((col * this.graphWidth / this.totalCols));
-      let y = -this.points[col]/this.maxVal * this.graphHeight;//  Math.round(this.points[col] * (this.maxVal / this.totalRows));
-      sh.graphics.lineTo(x, y);
-      console.log('x: ' + x + ' y: ' + y);
+    if(this.graphLine == null) 
+    {
+      this.graphLine = new createjs.Shape();
+      this.graphContainer.addChild(this.graphLine);
     }
-    sh.graphics.endStroke();
-    this.stage.addChild(sh);
+    this.graphLine.graphics.clear();
+    this.graphLine.graphics.setStrokeStyle(1);
+    this.graphLine.alpha = 1;
+    this.graphLine.graphics.beginStroke('#FFFFFF');
+    this.graphLine.graphics.beginFill('#FFFFFF11')
+    this.graphLine.graphics.moveTo(0, 0);
+    console.log('---------------')
+    for ( let col = 0; col < this.totalCols; col++) {
+      var x = Math.round((col * this.graphWidth / this.totalCols));
+      var y = -this.points[col]/this.maxVal * this.graphHeight;//  Math.round(this.points[col] * (this.maxVal / this.totalRows));
+      console.log(this.points[col] + '- y: ' + y)
+      this.graphLine.graphics.lineTo(x, y);
+    }
+    this.graphLine.graphics.lineTo(x, 0);
+    this.graphLine.graphics.lineTo(0, 0);
+    this.graphLine.graphics.endStroke();
   }
 
   onStageMouseMove(evt) {
+    let scale = this.vertLine.x /  this.stageWidth;
+    this.interest = .05 * scale;
+    console.log(this.interest);
+    this.calcGraphPoints();
+    this.plotGraphPoints();
     this.vertLine.x = evt.stageX;
-    this.stage.update();
+    //this.graphContainer.scaleX = this.graphContainer.scaleY = 1 + ( this.vertLine.x /  this.stageWidth);
   }
+
+  zoom(num) {
+    console.log(num);
+    let scale = num / 10;
+    TweenMax.to(this.graphContainer, .75, {scaleX: scale, scaleY: scale, ease: Power2.easeInOut});
+}
+
 
 }

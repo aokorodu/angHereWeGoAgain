@@ -2,8 +2,10 @@
   <div class="animationTitle">{{title}}</div>
   <canvas [width]=stageWidth [height]=stageHeight id="graphCanvas"></canvas>
   <div class="buttonHolder">
-      <button class="uiButton">{{stageWidth}}</button>
-      <button class="uiButton">{{stageHeight}}</button>
+      <button class="uiButton" (click)="zoom(40)">10 Years</button>
+      <button class="uiButton" (click)="zoom(30)">20 Years</button>
+      <button class="uiButton" (click)="zoom(20)">30 Years</button>
+      <button class="uiButton" (click)="zoom(10)">40 Years</button>
   </div>
   <!--label>Name: <input [(ngModel)]="gravity" placeholder="gravity"></label-->
 </div>
