@@ -20,8 +20,8 @@ export class ReadyGraphComponent implements OnInit {
   graphWidth = this.stageWidth - (2 * this.margin);
 
   vertLine: any;
-  totalRows = 25;
-  totalCols = 50
+  totalRows = 40;
+  totalCols = 40
   points: number[];
 
   maxVal = 0;
@@ -130,7 +130,7 @@ export class ReadyGraphComponent implements OnInit {
     this.vertLine.alpha = .4;
     this.vertLine.x = 100;
     this.vertLine.y = this.margin;
-    this.vertLine.graphics.setStrokeStyle(10);
+    this.vertLine.graphics.setStrokeStyle(30);
     this.vertLine.graphics.beginStroke("#FFFFFF");
     this.vertLine.graphics.moveTo(0, 0);
     this.vertLine.graphics.lineTo(0, this.graphHeight);
@@ -152,7 +152,7 @@ export class ReadyGraphComponent implements OnInit {
       this.points.push(val);
     }
 
-    this.maxVal = 12 * this.startVal; //this.points[this.points.length - 1];
+    this.maxVal = 8 * this.startVal; //this.points[this.points.length - 1];
 
   }
 
@@ -164,16 +164,14 @@ export class ReadyGraphComponent implements OnInit {
       this.graphContainer.addChild(this.graphLine);
     }
     this.graphLine.graphics.clear();
-    this.graphLine.graphics.setStrokeStyle(1);
+    this.graphLine.graphics.setStrokeStyle(0);
     this.graphLine.alpha = 1;
     this.graphLine.graphics.beginStroke('#FFFFFF');
     this.graphLine.graphics.beginFill('#FFFFFF11')
     this.graphLine.graphics.moveTo(0, 0);
-    console.log('---------------')
     for ( let col = 0; col < this.totalCols; col++) {
       var x = Math.round((col * this.graphWidth / this.totalCols));
       var y = -this.points[col]/this.maxVal * this.graphHeight;//  Math.round(this.points[col] * (this.maxVal / this.totalRows));
-      console.log(this.points[col] + '- y: ' + y)
       this.graphLine.graphics.lineTo(x, y);
     }
     this.graphLine.graphics.lineTo(x, 0);
@@ -184,7 +182,6 @@ export class ReadyGraphComponent implements OnInit {
   onStageMouseMove(evt) {
     let scale = this.vertLine.x /  this.stageWidth;
     this.interest = .05 * scale;
-    console.log(this.interest);
     this.calcGraphPoints();
     this.plotGraphPoints();
     this.vertLine.x = evt.stageX;
@@ -192,7 +189,6 @@ export class ReadyGraphComponent implements OnInit {
   }
 
   zoom(num) {
-    console.log(num);
     let scale = num / 10;
     TweenMax.to(this.graphContainer, .75, {scaleX: scale, scaleY: scale, ease: Power2.easeInOut});
 }
