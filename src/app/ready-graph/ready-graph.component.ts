@@ -13,17 +13,27 @@ export class ReadyGraphComponent implements OnInit {
   stage: any;
   backgroundFill: any = ['#212121', '#676767'];
   title: String = 'Readiness Calculator';
-  stageWidth = 800;
-  stageHeight = 800;
+  stageWidth = 540;
+  stageHeight = 960;
   margin = 20;
-  bottomMargin = 200;
-  graphHeight = this.stageHeight - this.margin - this.bottomMargin;
+
   graphWidth = this.stageWidth - (2 * this.margin);
+  graphHeight = this.graphWidth; // this.stageHeight - this.margin - this.bottomMargin;
+
   graphOrigin = new PVector(this.margin, this.margin + this.graphHeight);
+
+  bottomMargin = this.stageHeight - this.graphOrigin.y;
 
   // controls
   monthContLine: any;
   timeSliderLine: any;
+  goalSliderLine: any;
+  goalLine: any;
+  sliderHeight = 100;
+  sliderWidth = 30;
+
+  monthContSliderY = this.graphOrigin.y + 25;
+  goalSliderY = this.monthContSliderY + 100;
 
 
   totalRows = 40;
@@ -46,6 +56,8 @@ export class ReadyGraphComponent implements OnInit {
   // text
   monthlyAmt: any;
   amountAtTimeText: any;
+  goalLineText: any;
+  goalText: any;
 
   constructor() { }
 
@@ -65,24 +77,29 @@ export class ReadyGraphComponent implements OnInit {
     this.plotGraphPoints();
     this.plotOptGraphPoints();
     this.plotPessGraphPoints();
-    this.initVertLine();
+    this.initMonthContLine();
+    this.initGoalLine();
+    this.initGoalLineText();
+    this.initGoalText();
+    this.initGoalSliderLine();
     this.initTimeSliderLine();
     this.initMonthlyText();
     this.initAmountAtTimeText();
     this.updateAmountTimeText();
+    this.updateGoalLineText();
     this.initTicker();
   }
 
   initMonthlyText() {
-    this.monthlyAmt = new createjs.Text("Monthly Contribution:", "45px Helvetica", "#FFFFFF");
-    this.monthlyAmt.x = this.margin;
-    this.monthlyAmt.y = this.stageHeight - 100;
+    this.monthlyAmt = new createjs.Text("Monthly Contribution:", "35px Arial", "#FFFFFF");
+    this.monthlyAmt.x = 2 * this.margin;
+    this.monthlyAmt.y = this.monthContSliderY;
     this.stage.addChild(this.monthlyAmt);
     this.updateMonthlyText(5);
   }
 
   updateMonthlyText(num) {
-    this.monthlyAmt.text = "Monthly Contribution: $" + num;
+    this.monthlyAmt.text = "Monthly Contribution: $" + num.toLocaleString();
   }
 
   initTicker() {
@@ -164,11 +181,11 @@ export class ReadyGraphComponent implements OnInit {
     this.stage.addChild(this.graphContainer);
   }
 
-  initVertLine() {
+  initMonthContLine() {
     this.monthContLine = new createjs.Shape();
-    this.monthContLine.alpha = .4;
+    this.monthContLine.alpha = .2;
     this.monthContLine.x = this.margin;
-    this.monthContLine.y = this.graphOrigin.y + 25;
+    this.monthContLine.y = this.monthContSliderY;
     this.monthContLine.graphics.setStrokeStyle(30);
     this.monthContLine.graphics.beginStroke("#FFFFFF");
     this.monthContLine.graphics.moveTo(0, 0);
@@ -178,10 +195,63 @@ export class ReadyGraphComponent implements OnInit {
     this.stage.addChild(this.monthContLine);
   }
 
+  initGoalLine() {
+    this.goalSliderLine = new createjs.Shape();
+    this.goalSliderLine.alpha = .2;
+    this.goalSliderLine.x = this.margin + + this.graphWidth / 2;
+    this.goalSliderLine.y = this.goalSliderY;
+    this.goalSliderLine.graphics.setStrokeStyle(30);
+    this.goalSliderLine.graphics.beginStroke("#FFFFFF");
+    this.goalSliderLine.graphics.moveTo(0, 0);
+    this.goalSliderLine.graphics.lineTo(0, 75);
+    this.goalSliderLine.graphics.endStroke();
+    this.goalSliderLine.cache(-1, 0, -1, 75)
+    this.stage.addChild(this.goalSliderLine);
+  }
+
+  initGoalLineText() {
+    this.goalLineText = new createjs.Text(`${this.points[0] * 1000}`, "20px Arial", "#00ff00");
+    this.goalLineText.textAlign = "left";
+    this.goalLineText.x = this.margin;
+    this.goalLineText.y = this.graphOrigin.y - this.graphHeight / 2;
+    this.stage.addChild(this.goalLineText);
+    
+  }
+
+  initGoalText() {
+    this.goalText = new createjs.Text(`${this.points[0] * 1000}`, "35px Arial", "#00ff00");
+    this.goalText.textAlign = "left";
+    this.goalText.x = 2 * this.margin;
+    this.goalText.y = this.goalSliderY;
+    this.stage.addChild(this.goalText);
+    
+  }
+
+  updateGoalLineText() {
+    let val = 1000 * Math.round((this.graphOrigin.y - this.goalLine.y) / this.graphHeight * this.maxVal);
+    this.goalLineText.text = '$' + val.toLocaleString();
+    this.goalText.text = 'Retirement Goal: ' + this.goalLineText.text;
+    this.goalLineText.y = this.goalLine.y - 20;
+    
+  }
+
+  initGoalSliderLine() {
+    this.goalLine = new createjs.Shape();
+    this.goalLine.alpha = 1;
+    this.goalLine.x = this.margin;
+    this.goalLine.y = this.graphOrigin.y - this.graphHeight/2;
+    this.goalLine.graphics.setStrokeStyle(1);
+    this.goalLine.graphics.beginStroke("#00ff00");
+    this.goalLine.graphics.moveTo(0, 0);
+    this.goalLine.graphics.lineTo(this.graphWidth, 0);
+    this.goalLine.graphics.endStroke();
+    this.stage.addChild(this.goalLine);
+  }
+
   initTimeSliderLine() {
     this.timeSliderLine = new createjs.Shape();
     this.timeSliderLine.alpha = .3;
-    this.timeSliderLine.x = this.graphOrigin.x;
+    this.timeSliderLine.x = this.graphOrigin.x + this.graphWidth * 3/4;
     this.timeSliderLine.y = this.graphOrigin.y;
     this.timeSliderLine.graphics.setStrokeStyle(20);
     this.timeSliderLine.graphics.beginStroke("#FF0000");
@@ -190,6 +260,8 @@ export class ReadyGraphComponent implements OnInit {
     this.timeSliderLine.graphics.endStroke();
     this.stage.addChild(this.timeSliderLine);
   }
+
+  
 
   initAmountAtTimeText() {
     this.amountAtTimeText = new createjs.Text(`${this.points[0] * 1000}`, "24px Arial", "#FFFFFF");
@@ -228,7 +300,7 @@ export class ReadyGraphComponent implements OnInit {
     this.points = [];
     this.points.push(this.startVal);
     let st = this.startVal;
-    for ( let col = 1; col < this.totalCols + 2; col++) {
+    for ( let col = 1; col < this.totalCols + 1; col++) {
       let val = (st * Math.pow((1 + this.interest / 12), 12 * col));
       this.points.push(Math.round(val));
       st += this.monthlyPayment;
@@ -241,7 +313,7 @@ export class ReadyGraphComponent implements OnInit {
     this.optPoints = [];
     this.optPoints.push(this.startVal);
     let st = this.startVal;
-    for ( let col = 1; col < this.totalCols + 2; col++) {
+    for ( let col = 1; col < this.totalCols + 1; col++) {
       let val = st * Math.pow((1 + (this.interest * 1.15) / 12), 12 * col);
       this.optPoints.push(val);
       st += this.monthlyPayment;
@@ -254,7 +326,7 @@ export class ReadyGraphComponent implements OnInit {
     this.pessPoints = [];
     this.pessPoints.push(this.startVal);
     let st = this.startVal;
-    for ( let col = 1; col < this.totalCols + 2; col++) {
+    for ( let col = 1; col < this.totalCols + 1; col++) {
       let val = st * Math.pow((1 + (this.interest * 0.85) / 12), 12 * col);
       this.pessPoints.push(val);
       st += this.monthlyPayment;
@@ -337,21 +409,30 @@ export class ReadyGraphComponent implements OnInit {
   onStageMouseMove(evt) {
     let yPos = Math.round(evt.stageY);
     let xPos = evt.stageX;
-    
+    if(xPos > this.margin + this.graphWidth) {
+      xPos = this.margin  +this.graphWidth;
+    } else if(xPos < this.margin) {
+      xPos = this.margin;
+    }
+
     // monthly contribution
-    if(yPos > this.monthContLine.y && yPos < this.monthContLine.y + 75){
+    if(yPos > this.monthContLine.y && yPos < this.monthContLine.y + 75) {
       let scale = (this.monthContLine.x - this.margin) /  this.graphWidth;
       this.monthlyPayment = 1 * scale;
-      
-      if(xPos > this.margin + this.graphWidth) {
-        xPos = this.margin  +this.graphWidth;
-      } else if(xPos < this.margin) {
-        xPos = this.margin;
-      }
       this.monthContLine.x = xPos;
       this.updateMonthlyText(Math.round(this.monthlyPayment * 1000));
       this.updateAmountTimeText();
-      
+    }
+
+    // goal slider
+    if(yPos > this.goalSliderY && yPos < this.goalSliderY + this.sliderHeight) {
+      let scale = (this.goalSliderLine.x - this.margin) /  this.graphWidth;
+      //this.monthlyPayment = 1 * scale;
+      this.goalSliderLine.x = xPos;
+      this.goalLine.y = this.graphOrigin.y - (this.graphHeight * scale);
+      this.updateGoalLineText();
+      //this.updateMonthlyText(Math.round(this.monthlyPayment * 1000));
+      //this.updateAmountTimeText();
     }
 
     // time slider
@@ -362,6 +443,9 @@ export class ReadyGraphComponent implements OnInit {
       this.timeSliderLine.x = xPos;
       this.updateAmountTimeText();
     }
+
+    
+
     this.drawGraphLines();
 
   }
