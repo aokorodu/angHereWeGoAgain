@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as createjs from 'createjs-module';
 import {PVector} from '../pvector';
 import {TweenMax, Power2} from 'gsap';
+import {Slider} from './slider';
 
 @Component({
   selector: 'app-ready-graph',
@@ -25,17 +26,20 @@ export class ReadyGraphComponent implements OnInit {
   bottomMargin = this.stageHeight - this.graphOrigin.y;
 
   // controls
-  monthContLine: any;
+  monthlyContributionSlider: Slider;
+  goalSlider: Slider;
   timeSliderLine: any;
-  goalSliderLine: any;
+  ageSlider: Slider;
+  // goalSliderLine: any;
   goalLine: any;
   sliderHeight = 100;
   sliderWidth = 30;
 
   monthContSliderY = this.graphOrigin.y + 25;
   goalSliderY = this.monthContSliderY + 100;
+  ageSliderY = this.monthContSliderY + 200;
 
-
+  currentAge = 40;
   totalRows = 40;
   totalCols = 40;
 
@@ -58,6 +62,7 @@ export class ReadyGraphComponent implements OnInit {
   amountAtTimeText: any;
   goalLineText: any;
   goalText: any;
+  retireAgeText: any;
 
   constructor() { }
 
@@ -71,23 +76,51 @@ export class ReadyGraphComponent implements OnInit {
     this.initAxes();
     this.initGraphContainer();
     this.initHashLines();
+
     this.calcDefaultGraphPoints();
     this.calcOptGraphPoints();
     this.calcPessGraphPoints();
     this.plotGraphPoints();
     this.plotOptGraphPoints();
     this.plotPessGraphPoints();
-    this.initMonthContLine();
+
+    this.initMonthContSlider();
+    this.initMonthlyText();
+
+    this.initGoalSlider();
     this.initGoalLine();
     this.initGoalLineText();
     this.initGoalText();
-    this.initGoalSliderLine();
+
     this.initTimeSliderLine();
-    this.initMonthlyText();
     this.initAmountAtTimeText();
+    this.initRetireAgeText();
+
+    this.initAgeSlider();
+
     this.updateAmountTimeText();
     this.updateGoalLineText();
+    this.updateRetireAgeText();
     this.initTicker();
+  }
+
+  initRetireAgeText() {
+    this.retireAgeText = new createjs.Text("65", "35px Arial", "#FFFFFF");
+    this.retireAgeText.textAlign = "left";
+    this.retireAgeText.x = 2 * this.margin;
+    this.retireAgeText.y = this.ageSliderY;
+    this.stage.addChild(this.retireAgeText);
+  }
+
+  updateRetireAgeText() {
+    let num = Math.round(this.ageSlider.scale() * this.totalCols);
+    this.retireAgeText.text = `Retirement Age: ${this.currentAge + num}`;
+  }
+
+  initAgeSlider() {
+    this.ageSlider = new Slider(this.margin, this.ageSliderY, this.graphWidth, 75, this.stage);
+    this.ageSlider.init();
+    this.ageSlider.setInitialPosition(.75);
   }
 
   initMonthlyText() {
@@ -181,32 +214,15 @@ export class ReadyGraphComponent implements OnInit {
     this.stage.addChild(this.graphContainer);
   }
 
-  initMonthContLine() {
-    this.monthContLine = new createjs.Shape();
-    this.monthContLine.alpha = .2;
-    this.monthContLine.x = this.margin;
-    this.monthContLine.y = this.monthContSliderY;
-    this.monthContLine.graphics.setStrokeStyle(30);
-    this.monthContLine.graphics.beginStroke("#FFFFFF");
-    this.monthContLine.graphics.moveTo(0, 0);
-    this.monthContLine.graphics.lineTo(0, 75);
-    this.monthContLine.graphics.endStroke();
-    this.monthContLine.cache(-1, 0, -1, 75)
-    this.stage.addChild(this.monthContLine);
+  initMonthContSlider() {
+    this.monthlyContributionSlider = new Slider(this.margin, this.monthContSliderY, this.graphWidth, 80, this.stage);
+    this.monthlyContributionSlider.init();
   }
 
-  initGoalLine() {
-    this.goalSliderLine = new createjs.Shape();
-    this.goalSliderLine.alpha = .2;
-    this.goalSliderLine.x = this.margin + + this.graphWidth / 2;
-    this.goalSliderLine.y = this.goalSliderY;
-    this.goalSliderLine.graphics.setStrokeStyle(30);
-    this.goalSliderLine.graphics.beginStroke("#FFFFFF");
-    this.goalSliderLine.graphics.moveTo(0, 0);
-    this.goalSliderLine.graphics.lineTo(0, 75);
-    this.goalSliderLine.graphics.endStroke();
-    this.goalSliderLine.cache(-1, 0, -1, 75)
-    this.stage.addChild(this.goalSliderLine);
+  initGoalSlider() {
+    this.goalSlider = new Slider(this.margin, this.goalSliderY, this.graphWidth, 80, this.stage);
+    this.goalSlider.init();
+    this.goalSlider.setInitialPosition(.5);
   }
 
   initGoalLineText() {
@@ -235,7 +251,7 @@ export class ReadyGraphComponent implements OnInit {
     
   }
 
-  initGoalSliderLine() {
+  initGoalLine() {
     this.goalLine = new createjs.Shape();
     this.goalLine.alpha = 1;
     this.goalLine.x = this.margin;
@@ -415,24 +431,16 @@ export class ReadyGraphComponent implements OnInit {
       xPos = this.margin;
     }
 
-    // monthly contribution
-    if(yPos > this.monthContLine.y && yPos < this.monthContLine.y + 75) {
-      let scale = (this.monthContLine.x - this.margin) /  this.graphWidth;
-      this.monthlyPayment = 1 * scale;
-      this.monthContLine.x = xPos;
+    if(this.monthlyContributionSlider.isOver(evt.stageX, evt.stageY)) {
+      this.monthlyPayment = 1 * this.monthlyContributionSlider.scale();
       this.updateMonthlyText(Math.round(this.monthlyPayment * 1000));
       this.updateAmountTimeText();
     }
 
     // goal slider
-    if(yPos > this.goalSliderY && yPos < this.goalSliderY + this.sliderHeight) {
-      let scale = (this.goalSliderLine.x - this.margin) /  this.graphWidth;
-      //this.monthlyPayment = 1 * scale;
-      this.goalSliderLine.x = xPos;
-      this.goalLine.y = this.graphOrigin.y - (this.graphHeight * scale);
+    if(this.goalSlider.isOver(evt.stageX, evt.stageY)) {
+      this.goalLine.y = this.graphOrigin.y - (this.graphHeight * this.goalSlider.scale());
       this.updateGoalLineText();
-      //this.updateMonthlyText(Math.round(this.monthlyPayment * 1000));
-      //this.updateAmountTimeText();
     }
 
     // time slider
@@ -441,13 +449,28 @@ export class ReadyGraphComponent implements OnInit {
         xPos = this.margin;
       }
       this.timeSliderLine.x = xPos;
+      this.ageSlider.setInitialPosition((this.timeSliderLine.x - this.margin) / this.graphWidth)
       this.updateAmountTimeText();
+      this.updateRetireAgeText();
     }
+
+    // age slider
+    if(this.ageSlider.isOver(evt.stageX, evt.stageY)) {
+      this.updateTimeSliderLine(this.ageSlider.scale());
+      this.updateAmountTimeText();
+      this.updateRetireAgeText();
+    }
+
+    
 
     
 
     this.drawGraphLines();
 
+  }
+
+  updateTimeSliderLine(percentage) {
+    this.timeSliderLine.x = this.margin + (this.graphWidth * percentage);
   }
 
   zoom(num) {
