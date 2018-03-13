@@ -14,8 +14,8 @@ export class ReadyGraphComponent implements OnInit {
   stage: any;
   backgroundFill: any = ['#212121', '#676767'];
   title: String = 'Readiness Calculator';
-  stageWidth = 540;
-  stageHeight = 960;
+  stageWidth = 411;
+  stageHeight = 731;
   margin = 20;
 
   graphWidth = this.stageWidth - (2 * this.margin);
@@ -105,7 +105,7 @@ export class ReadyGraphComponent implements OnInit {
   }
 
   initRetireAgeText() {
-    this.retireAgeText = new createjs.Text("65", "35px Arial", "#FFFFFF");
+    this.retireAgeText = new createjs.Text("65", "25px Arial", "#FFFFFF");
     this.retireAgeText.textAlign = "left";
     this.retireAgeText.x = 2 * this.margin;
     this.retireAgeText.y = this.ageSliderY;
@@ -124,7 +124,7 @@ export class ReadyGraphComponent implements OnInit {
   }
 
   initMonthlyText() {
-    this.monthlyAmt = new createjs.Text("Monthly Contribution:", "35px Arial", "#FFFFFF");
+    this.monthlyAmt = new createjs.Text("Monthly Contribution:", "25px Arial", "#FFFFFF");
     this.monthlyAmt.x = 2 * this.margin;
     this.monthlyAmt.y = this.monthContSliderY;
     this.stage.addChild(this.monthlyAmt);
@@ -143,7 +143,6 @@ export class ReadyGraphComponent implements OnInit {
   draw(evt) {
     this.stage.update(evt);
   }
-  
 
   initStage() {
     this.stage = new createjs.Stage('graphCanvas');
@@ -156,7 +155,6 @@ export class ReadyGraphComponent implements OnInit {
     bg.graphics.rect(0, 0, this.stageWidth, this.stageHeight);
     bg.cache(0, 0, this.stage.canvas.width, this.stage.canvas.height);
     this.stage.addChild(bg);
-    
   }
 
   initAxes() {
@@ -235,7 +233,7 @@ export class ReadyGraphComponent implements OnInit {
   }
 
   initGoalText() {
-    this.goalText = new createjs.Text(`${this.points[0] * 1000}`, "35px Arial", "#00ff00");
+    this.goalText = new createjs.Text(`${this.points[0] * 1000}`, "25px Arial", "#00ff00");
     this.goalText.textAlign = "left";
     this.goalText.x = 2 * this.margin;
     this.goalText.y = this.goalSliderY;
